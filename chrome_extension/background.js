@@ -6,7 +6,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tabId = tabs[0]?.id;
       if (tabId) {
-        chrome.tabs.sendMessage(tabId, { type: 'CONTENT_SCAN_REQUEST' });
+        chrome.tabs.sendMessage(tabId, { type: 'CONTENT_SCAN_REQUEST' }, (response) => {
+          if (chrome.runtime.lastError) {
+            console.error('Error sending message to content script:', chrome.runtime.lastError);
+          }
+        });
       }
     });
     sendResponse({ ok: true });
